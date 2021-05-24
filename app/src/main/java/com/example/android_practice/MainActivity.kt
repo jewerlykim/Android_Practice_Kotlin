@@ -2,10 +2,36 @@ package com.example.android_practice
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.android_practice.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding : ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
+        binding.btnFragment1.setOnClickListener { setFrag(0) }
+        binding.btnFragment2.setOnClickListener { setFrag(1) }
+        binding.btnFragment3.setOnClickListener { setFrag(2) }
+
     }
+
+    private fun setFrag(fragNum : Int) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        when(fragNum){
+            0 -> {
+                fragmentTransaction.replace(R.id.main_frame, Fragment1()).commit()
+            }
+            1 -> {
+                fragmentTransaction.replace(R.id.main_frame, Fragment2()).commit()
+            }
+            2 -> {
+                fragmentTransaction.replace(R.id.main_frame, Fragment3()).commit()
+            }
+        }// when
+    }// setFrag
 }
