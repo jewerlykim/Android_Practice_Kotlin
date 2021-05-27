@@ -90,3 +90,239 @@ onDetach()는 항상 생명주기 state가 끝난 후에 호출된다. onDetach(
 
 ### 도움을 받은 자료
 [android developers/fragments](https://developer.android.com/guide/fragments)
+
+
+# 💁🏻‍♂️ 글을 시작하며
+지난 글에서는 Fragment의 탄생배경부터 액티비티와 달리 따로 가지고 있는 독특한 생명주기에 대해서 자세히 알아보는 시간을 가졌다. 
+
+> [지난 글 보러가기 - Android Fragment 1탄 - 탄생배경과 생명주기](https://velog.io/@jewelrykim/Android-Fragment-1%ED%83%84-%ED%83%84%EC%83%9D%EB%B0%B0%EA%B2%BD%EA%B3%BC-%EC%83%9D%EB%AA%85%EC%A3%BC%EA%B8%B0)
+
+이번 글에서는 실제 Fragment를 Android Studio에서 구현해보는 시간을 가져보도록 한다. 
+
+추가로 프로젝트를 하면서 뷰바인딩을 액티비티에서는 적용해봤지만 프래그먼트에서는 적용해본 적이 없었기 때문에 **_프래그먼트에서 뷰바인딩_**을 사용해보도록 한다. 
+
+또, material design에서 제공하는 **_바텀 네비게이션_**을 사용해서 프래그먼트 전환을 해보려고 한다. 
+
+# 📌 Dependency
+viewBinding과 material design을 쓰기 위해서 app단 build gradle에 의존성을 추가해주도록 한다.
+## viewBinding
+```kotlin
+android {
+    ---codes---
+    buildFeatures {
+        viewBinding true
+    }
+	---codes---
+}
+```
+viewBinding 속성을 true로 해준다.
+## bottomNavigationBar
+material design 홈페이지에서 최신 버전을 확인하고 의존성을 추가해준다.
+```kotlin
+dependencies {
+	---codes---
+    implementation 'com.google.android.material:material:1.3.0'
+}
+```
+
+# 📌 xml
+먼저 프래그먼트의 주인의 될 activity에서 FrameLayout과 bottomnavigation을 추가해준다. 참고로 전체 레이아웃은 constraintlayout으로 구현하였다.
+### FrameLayout
+FrameLayout 은 프래그먼트에 따라 달라지는 뷰를 가진 레이아웃이다. 이 부분에 프래그먼트들이 갈아끼워진다고 생각하면 된다.
+```kotlin
+    <FrameLayout
+        android:id="@+id/framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+        />
+```
+### bottom navigation bar
+bottomNavigation을 완성하기 전에 바텀 네비게이션에 들어갈 menu를 먼저 만들어주도록한다. menu는 바텀 네비게이션바에서 버튼의 아이콘, label을 정의할 수 있다.
+![](https://images.velog.io/images/jewelrykim/post/46ce035a-14a0-48c1-86a6-4677639e912a/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202021-05-27%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%2010.38.29.png)
+resource 폴더에서 Android resource Directory를 생성한다. 그 후에 resource type을 menu로 선택하면 menu 라는 resource 폴더가 생긴다. 폴더에 bottom_nav_menu.xml을 만들어보도록 하자.
+```kotlin
+// bottom_nav_menu.xml
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_home"
+        android:title="홈"
+        android:icon="@drawable/ic_baseline_home_24" />
+    <item
+        android:id="@+id/menu_ranking"
+        android:title="랭킹"
+        android:icon="@drawable/ic_baseline_format_list_numbered_24" />
+    <item
+        android:id="@+id/menu_profile"
+        android:title="프로필"
+        android:icon="@drawable/ic_baseline_account_circle_24" />
+</menu>
+```
+drawble은 직접 vector에서 찾아서 추가해주면 된다. title은 아이콘 아래에 label로 쓰이게 된다.
+#### 다시 activity의 xml로 돌아가보자.
+```kotlin
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        app:menu="@menu/bottom_nav_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/framelayout"
+        android:background="@color/white"
+        app:itemIconSize="40dp"
+        app:labelVisibilityMode="unlabeled"
+        />
+```
+이렇게 추가해준다. 하나씩 뜯어보자면
+
+ 
+```kotlin
+   app:menu="@menu/bottom_nav_menu"
+
+```
+
+아까 만들었던 menu resource를 적용한다.
+```kotlin
+   android:background="@color/white"
+
+```
+Bar의 배경색을 흰색으로 바꾼다.
+```kotlin
+   app:itemIconSize="40dp"
+
+```
+아이콘의 사이즈를 조절한다.
+```kotlin
+   app:labelVisibilityMode="unlabeled"
+
+```
+아까 menu에서 정한 title 속성을 없애준다. 글자는 보이지 않고 아이콘만 보이게 하는 속성이다.
+이렇게 완성하면 
+![](https://images.velog.io/images/jewelrykim/post/2804ffc9-00a3-4052-9c11-d9a91567fd9b/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202021-05-27%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%2010.47.29.png)
+이와 같은 Design을 얻을 수 있다.
+#### FrameLayout에 들어갈 Fragment의 xml에는 어떤 내용이 들어와도 상관없으니 예시로 각기다른 뷰로 간단히 배경색과 Textview만 포함된 xml을 3개를 만들어준다. 이는 글에서는 생략하도록 한다. xml의 파일명은 각각 fragment_home.xml, fragment_ranking.xml, fragment_profile.xml이다.
+
+# ✏️ Fragment
+HomeFragment라는 이름으로 Kotlin Class를 생성한 뒤 Fragment를 상속해준다.
+```kotlin
+class HomeFragment : Fragment(){
+	// TODO
+}
+```
+프래그먼트 외부인 액티비티에서 접근하고 메모리에 올라간 프래그먼트 인스턴스를 사용하기 위해 companion object를 사용한다.
+```kotlin
+    companion object {
+        fun newInstance() : HomeFragment {
+            return HomeFragment()
+        }
+    }
+```
+외부에서는 
+```kotlin
+HomeFragment.newInstace()
+```
+이렇게 접근할 수 있다.
+
+#### viewBinding 정의
+```kotlin
+    private var binding : FragmentHomeBinding? = null
+
+```
+#### onCreateView
+```kotlin
+    // 뷰가 생성되었을 때 - 프레그먼트와 레이아웃을 연결시켜주는 부분
+    override fun onCreateView(inflater: LayoutInflater,
+    container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHomeBinding.inflate(inflater, 
+        container, false)
+        
+        return binding!!.root
+    }
+```
+#### onDestroyView
+프래그먼트가 GC에 의해 정리될 수 있도록 작업을 해준다.
+```kotlin
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
+    }
+```
+
+# 📌 Activity
+bottom navigation item이 선택되었을 때 콜백해주는 리스너를 액티비티에서 implement 하는 방식과 따로 메소드로 정의해주는 방식 두가지 방식을 모두 사용해보려고 한다.
+### 1 . activity에 implement
+```kotlin
+class BottomNavWithFragments : AppCompatActivity(),
+BottomNavigationView.OnNavigationItemSelectedListener {
+	// TODO
+}
+```
+이렇게 정의해준다.
+
+각각의 사용할 fragment들과 viewbinding을 lateinit 시킨다.
+```kotlin
+    private lateinit var homeFragment: HomeFragment
+    private lateinit var rankingFragment: RankingFragment
+    private lateinit var profileFragment: ProfileFragment
+    
+    private lateinit var binding : ActivityBottomNavWithFragmentsBinding
+
+```
+#### onCreate
+```kotlin
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityBottomNavWithFragmentsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        binding.bottomNav.setOnNavigationItemSelectedListener(this)
+    }
+```
+onNavigationItemSelected 메소드를 override 해준다.
+```kotlin
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(it.itemId){
+            R.id.menu_home -> {
+                homeFragment = HomeFragment.newInstance()
+                supportFragmentManager.beginTransaction()
+                .replace(R.id.framelayout, homeFragment).commit()
+            }
+            R.id.menu_ranking -> {
+                rankingFragment = RankingFragment.newInstance()
+                supportFragmentManager.beginTransaction()
+                .replace(R.id.framelayout, rankingFragment).commit()
+            }
+            R.id.menu_profile -> {
+                profileFragment = ProfileFragment.newInstance()
+                supportFragmentManager.beginTransaction()
+                .replace(R.id.framelayout, profileFragment).commit()
+            }
+        }
+        
+        return true
+    }
+```
+replace는 기존에 있던 fragment를 교체한다는 뜻이다. 처음 화면을 넣으려면 onCreate에서 add로 추가해준다.
+
+완성했다. 아래 영상은 기기에서 실행했을 때 영상이다. 
+
+![](https://images.velog.io/images/jewelrykim/post/3b8f4f7b-e73c-43b9-ab0e-3f1d42f0371c/fragment%E1%84%83%E1%85%A9%E1%86%BC%E1%84%8C%E1%85%A1%E1%86%A8%E1%84%8B%E1%85%A7%E1%86%BC%E1%84%89%E1%85%A1%E1%86%BC.gif)
+
+
+# 🙋‍♂️ 글을 마치며
+지난 프로젝트를 하면서 Fragment를 사용하지 못해서 아쉬움이 남았었는데 이렇게 예제를 작성해보면서 아쉬움이 조금은 달래졌다. 메모리의 효율적 사용과 모듈을 재사용할 수 있는 프래그먼트의 장점을 생각하면 안드로이드 프로그래밍에 도움이 될 것이라 믿는다. 
+
+다음 글에서부터는 프래그먼트에서의 데이터 전송에 대해서 알아볼 예정이다. 그리고 했었던 프로젝트에서 액티비티에서 프래그먼트로 바꿀 수 있는 부분이 있는지 확인하고 바꾸는 작업을 시작해보려고 한다. 대부분의 예제자료를 아래 youtube 채널에서 튜토리얼을 보며 도움을 받았는데 이렇게 지적 재산을 기부해주는 개발자들에게 감사의 말씀을 표하며 나도 그들 중 하나가 될 것을 다짐하며 이번 글을 마치도록 한다. 😍
+
+
+
+# 👍 도움받은 자료
+[개발하는 정대리 - youtube](https://www.youtube.com/channel/UCutO2H_AVmWHbzvE92rpxjA)
+[홍드로이드 - youtube](https://www.youtube.com/channel/UCEdsGM2ALcUGkUCNSMAthLg)
+
