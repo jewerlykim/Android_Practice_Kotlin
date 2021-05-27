@@ -310,6 +310,50 @@ onNavigationItemSelected 메소드를 override 해준다.
 ```
 replace는 기존에 있던 fragment를 교체한다는 뜻이다. 처음 화면을 넣으려면 onCreate에서 add로 추가해준다.
 
+### 2 . 따로 메소드 만들기
+이때는 activity에 리스너를 implement 하지 않는다.
+```kotlin
+    private val onNavigationItemSelectedListener = BottomNavigationView
+    .OnNavigationItemSelectedListener{
+        when(it.itemId){
+            R.id.menu_home -> {
+                homeFragment = HomeFragment.newInstance()
+                supportFragmentManager.beginTransaction()
+                .replace(R.id.framelayout, homeFragment).commit()
+            }
+            R.id.menu_ranking -> {
+                rankingFragment = RankingFragment.newInstance()
+                supportFragmentManager.beginTransaction()
+                .replace(R.id.framelayout, rankingFragment).commit()
+            }
+            R.id.menu_profile -> {
+                profileFragment = ProfileFragment.newInstance()
+                supportFragmentManager.beginTransaction()
+                .replace(R.id.framelayout, profileFragment).commit()
+            }
+        }
+        true
+    }
+```
+#### onCreate
+```kotlin
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityBottomNavWithFragmentsBinding
+        .inflate(layoutInflater)
+        setContentView(binding.root)
+
+        homeFragment = HomeFragment.newInstance()
+        supportFragmentManager.beginTransaction()
+        .add(R.id.framelayout, homeFragment).commit()
+        
+        binding.bottomNav
+        .setOnNavigationItemSelectedListener
+        (onNavigationItemSelectedListener)
+    }
+```
+
+
 완성했다. 아래 영상은 기기에서 실행했을 때 영상이다. 
 
 ![](https://images.velog.io/images/jewelrykim/post/3b8f4f7b-e73c-43b9-ab0e-3f1d42f0371c/fragment%E1%84%83%E1%85%A9%E1%86%BC%E1%84%8C%E1%85%A1%E1%86%A8%E1%84%8B%E1%85%A7%E1%86%BC%E1%84%89%E1%85%A1%E1%86%BC.gif)
@@ -325,4 +369,3 @@ replace는 기존에 있던 fragment를 교체한다는 뜻이다. 처음 화면
 # 👍 도움받은 자료
 [개발하는 정대리 - youtube](https://www.youtube.com/channel/UCutO2H_AVmWHbzvE92rpxjA)
 [홍드로이드 - youtube](https://www.youtube.com/channel/UCEdsGM2ALcUGkUCNSMAthLg)
-
