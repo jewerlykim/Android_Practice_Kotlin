@@ -1,10 +1,14 @@
 package com.example.android_practice
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.android_practice.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
 
     private lateinit var binding : ActivityMainBinding
 
