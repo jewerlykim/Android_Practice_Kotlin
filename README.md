@@ -2,7 +2,7 @@
 # 목차
 - [Fragment 1탄 - 탄생배경, 생명주기](#1--Fragment)
 - [Fragment 2탄 - ViewBinding, bottomNavigationBar를 통해 구현하기](Fragment-2--ViewBinding-bottomNavigationBar를-통해-구현하기)
-- [Kotlin  고차함수와 람다를 예제를 통해 익히자](Kotlin--고차함수와-람다를-예제를-통해-익히자]
+- [Kotlin  고차함수와 람다를 예제를 통해 익히자](Kotlin--고차함수와-람다를-예제를-통해-익히자)
 
 
 
