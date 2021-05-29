@@ -3,19 +3,19 @@ package com.example.android_practice
 fun main() {
 //    val sum = {x : Int, y : Int -> x + y} // lambda
     val sum : (Int, Int) -> Int = {x, y -> x + y} // original format lambda
-    println(sum(1,2))
-    Calculator(2, 1, { a : Int, b : Int -> a + b})
-    Calculator(2, 1) { a, b -> a + b } // 고차함수에
+    println(sum(2,3))
+    Calculator(2, 4) { a: Int, b: Int -> a + b }
+    Calculator(3, 5) { a, b -> a + b } // 고차함수에
     // 타입이 정의되어 있는 경우 인자 타입을 뺄수도 있다.
-    Calculator(2, 1) { a: Int, b: Int -> a + b } // 맨 마지막 인자가 람다일경우
-    Calculator(3,4, ::sum)
+    Calculator(4, 6) { a: Int, b: Int -> a + b } // 맨 마지막 인자가 람다일경우
+    Calculator(5,7, ::sum)
     // 함수형 변수
     val minus : (Int, Int) -> Int = {a, b -> a-b}
     Calculator(5,2, minus)
 
     // 바깥으로 뺄수있다.
-    Square(2) {a -> a * a}
-    Square(2) {it * it}
+    Square(3) {a -> a * a}
+    Square(3) {it * it}
 
     PrintInfo() {println("1.0")}
     PrintInfo { println("1.1") } // () 소괄호 생략 가능
