@@ -1,8 +1,9 @@
-package com.example.android_practice
+package com.example.android_practice.Fragment
 
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.android_practice.R
 import com.example.android_practice.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

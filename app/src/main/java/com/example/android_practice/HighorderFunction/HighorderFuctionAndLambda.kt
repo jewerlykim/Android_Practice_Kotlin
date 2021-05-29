@@ -1,4 +1,4 @@
-package com.example.android_practice
+package com.example.android_practice.HighorderFunction
 
 fun main() {
 //    val sum = {x : Int, y : Int -> x + y} // lambda

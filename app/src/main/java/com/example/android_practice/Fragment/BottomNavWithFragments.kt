@@ -1,9 +1,10 @@
-package com.example.android_practice
+package com.example.android_practice.Fragment
 
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.example.android_practice.R
 import com.example.android_practice.databinding.ActivityBottomNavWithFragmentsBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
