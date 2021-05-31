@@ -7,7 +7,7 @@ fun main (args : Array<String>) {
 
     println("OuterClass.outerVar : ${temp1.outerVar}")
     // OuterClass 객체에서 InnerClass 변수 사용 불가
-    //println("OuterClass.innerVar : ${temp1.innerVar}")
+//    println("OuterClass.innerVar : ${temp1.innerVar}")
 
     println("InnerClass.innerVar : ${temp2.innerVar}")
     // InnerClass 객체에서 OuterClass 변수 사용 불가
