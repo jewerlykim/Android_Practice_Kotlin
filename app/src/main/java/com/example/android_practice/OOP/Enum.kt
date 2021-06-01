@@ -7,16 +7,16 @@ fun main (args : Array<String>) {
     println(Fruit.BANANA)
     println(Fruit.ORANGE)
 
-    println(Animal.LION)
-    println(Animal.TIGER)
-    println(Animal.DOG)
+    println(AnimalEnum.LION)
+    println(AnimalEnum.TIGER)
+    println(AnimalEnum.DOG)
 }
 
 enum class Fruit {
     APPLE, BANANA, ORANGE
 }
 
-enum class Animal (val animal : String) {
+enum class AnimalEnum (val animal : String) {
     LION("사자"),
     TIGER("호랑이"),
     DOG("개")
